@@ -1,16 +1,43 @@
 package ru.netology.testmode.test;
 
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.netology.testmode.data.RegistrationDto;
 
 import static com.codeborne.selenide.Selenide.open;
+import static io.restassured.RestAssured.given;
 import static ru.netology.testmode.data.DataGenerator.Registration.getRegisteredUser;
 import static ru.netology.testmode.data.DataGenerator.Registration.getUser;
 import static ru.netology.testmode.data.DataGenerator.getRandomLogin;
 import static ru.netology.testmode.data.DataGenerator.getRandomPassword;
 
 class AuthTest {
+    // спецификация нужна для того, чтобы переиспользовать настройки в разных запросах
+        private static RequestSpecification requestSpec = new RequestSpecBuilder()
+                .setBaseUri("http://localhost")
+                .setPort(9999)
+                .setAccept(ContentType.JSON)
+                .setContentType(ContentType.JSON)
+                .log(LogDetail.ALL)
+                .build();
+
+        @BeforeAll
+        static void setUpAll() {
+            // сам запрос
+            given() // "дано"
+                    .spec(requestSpec) // указываем, какую спецификацию используем
+                    .body(new RegistrationDto("vasya", "password", "active")) // передаём в теле объект, который будет преобразован в JSON
+                    .when() // "когда"
+                    .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
+                    .then() // "тогда ожидаем"
+                    .statusCode(200); // код 200 OK
+        }
 
     @BeforeEach
     void setup() {
