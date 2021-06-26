@@ -1,1 +1,1 @@
-# Patterns-TestMode
+# [![Build status](https://ci.appveyor.com/api/projects/status/5ak4dv3pvfn9mo5e?svg=true)](https://ci.appveyor.com/project/MVGIC/patterns-testmode)
