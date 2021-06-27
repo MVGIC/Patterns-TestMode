@@ -1,14 +1,13 @@
 package ru.netology.testmode.data;
 
 import com.github.javafaker.Faker;
+import com.google.gson.Gson;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import lombok.Value;
-import lombok.val;
 
-import javax.swing.text.html.HTMLDocument;
 import java.util.Locale;
 
 import static io.restassured.RestAssured.given;
@@ -32,6 +31,15 @@ public class DataGenerator {
         // TODO: отправить запрос на указанный в требованиях path, передав в body запроса объект user
         //  и не забудьте передать подготовленную спецификацию requestSpec.
         //  Пример реализации метода показан в условии к задаче.
+        // сам запрос
+
+        given() // "дано"
+                .spec(requestSpec) // указываем, какую спецификацию используем
+                .body(new Gson().toJson(user)) // передаём в теле объект, который будет преобразован в JSON
+                .when() // "когда"
+                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
+                .then() // "тогда ожидаем"
+                .statusCode(200); // код 200 OK
     }
 
     public static String getRandomLogin(String locale) {
@@ -47,7 +55,7 @@ public class DataGenerator {
         // TODO: добавить логику для объявления переменной password и задания её значения, для генерации
         //  случайного пароля используйте faker
 
-        String password = faker.name().lastName()+""+faker.number().randomNumber();
+        String password = faker.internet().password();
         return password;
     }
 
@@ -57,7 +65,7 @@ public class DataGenerator {
 
         public static RegistrationDto getUser(String status) {
             // TODO: создать пользователя user используя методы getRandomLogin(), getRandomPassword() и параметр status
-            Faker faker = new Faker(new Locale("en"));
+
             return new RegistrationDto(
                     getRandomLogin("en"),
                     getRandomPassword("en"),
@@ -66,12 +74,12 @@ public class DataGenerator {
         }
     }
 
-        public static RegistrationDto getRegisteredUser(String status) {
-            // TODO: объявить переменную registeredUser и присвоить ей значение возвращённое getUser(status).
-            // Послать запрос на регистрацию пользователя с помощью вызова sendRequest(registeredUser)
-            String registeredUser = new RegistrationDto();
-            return registeredUser;
-        }
+    public static RegistrationDto getRegisteredUser(String status) {
+        // TODO: объявить переменную registeredUser и присвоить ей значение возвращённое getUser(status).
+        // Послать запрос на регистрацию пользователя с помощью вызова sendRequest(registeredUser)
+        RegistrationDto registeredUser = getUser(status);
+        sendRequest(registeredUser);
+        return registeredUser;
     }
 
     @Value
