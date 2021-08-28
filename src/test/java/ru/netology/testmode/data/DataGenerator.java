@@ -11,6 +11,7 @@ import lombok.Value;
 import java.util.Locale;
 
 import static io.restassured.RestAssured.given;
+import static javax.swing.text.DefaultStyledDocument.ElementSpec.ContentType;
 import static ru.netology.testmode.data.DataGenerator.Registration.getUser;
 
 public class DataGenerator {
@@ -28,11 +29,6 @@ public class DataGenerator {
 
     private static void sendRequest(RegistrationDto user) {
 
-        // TODO: отправить запрос на указанный в требованиях path, передав в body запроса объект user
-        //  и не забудьте передать подготовленную спецификацию requestSpec.
-        //  Пример реализации метода показан в условии к задаче.
-        // сам запрос
-
         given() // "дано"
                 .spec(requestSpec) // указываем, какую спецификацию используем
                 .body(new Gson().toJson(user)) // передаём в теле объект, который будет преобразован в JSON
@@ -44,16 +40,11 @@ public class DataGenerator {
 
     public static String getRandomLogin(String locale) {
 
-        // TODO: добавить логику для объявления переменной login и задания её значения, для генерации
-        //  случайного логина используйте faker
-
         String login = faker.name().firstName();
         return login;
     }
 
     public static String getRandomPassword(String locale) {
-        // TODO: добавить логику для объявления переменной password и задания её значения, для генерации
-        //  случайного пароля используйте faker
 
         String password = faker.internet().password();
         return password;
@@ -64,7 +55,6 @@ public class DataGenerator {
         }
 
         public static RegistrationDto getUser(String status) {
-            // TODO: создать пользователя user используя методы getRandomLogin(), getRandomPassword() и параметр status
 
             return new RegistrationDto(
                     getRandomLogin("en"),
@@ -75,8 +65,7 @@ public class DataGenerator {
     }
 
     public static RegistrationDto getRegisteredUser(String status) {
-        // TODO: объявить переменную registeredUser и присвоить ей значение возвращённое getUser(status).
-        // Послать запрос на регистрацию пользователя с помощью вызова sendRequest(registeredUser)
+
         RegistrationDto registeredUser = getUser(status);
         sendRequest(registeredUser);
         return registeredUser;
